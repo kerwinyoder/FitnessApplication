@@ -10,28 +10,91 @@
     tools:context="com.example.kerwinyoder.logajog.MainActivity">
 
     <TextView
+        android:id="@+id/durationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Duration"
         android:layout_below="@+id/duration"
         android:layout_centerHorizontal="true"
-        android:id="@+id/durationText" />
+        android:text="Duration" />
 
     <Chronometer
+        android:id="@+id/duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/duration"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textSize="50sp" />
 
-    <Button
+    <TextView
+        android:id="@+id/speed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Activity"
+        android:layout_below="@+id/durationText"
+        android:layout_centerHorizontal="true"
+        android:text="@string/initial_speed"
+        android:textColor="@android:color/black"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/speedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/speed"
+        android:layout_centerHorizontal="true"
+        android:text="Speed" />
+
+    <TextView
+        android:id="@+id/avgSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/speedText"
+        android:layout_centerHorizontal="true"
+        android:text="@string/initial_avg_speed"
+        android:textColor="@android:color/black"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/avgSpeedText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avgSpeed"
+        android:layout_centerHorizontal="true"
+        android:text="Avg. Speed" />
+
+    <TextView
+        android:id="@+id/distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/avgSpeedText"
+        android:layout_centerHorizontal="true"
+        android:text="@string/initial_distance"
+        android:textColor="@android:color/black"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/distance"
+        android:layout_centerHorizontal="true"
+        android:text="Distance" />
+
+    <Button
         android:id="@+id/activityBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="activityBtnClick"
+        android:text="Start Activity"
+        android:layout_above="@+id/resetBtn"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/resetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="activityBtnClick"/>
+        android:onClick="resetBtnClick"
+        android:text="Reset" />
 
 </RelativeLayout>
