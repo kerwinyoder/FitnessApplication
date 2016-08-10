@@ -7,4 +7,8 @@
     <string name="activate">Activate</string>
     <string name="initial_avg_speed">0.00 m/s</string>
     <string name="initial_distance">0.00 m</string>
+    <string name="discard_activity_title">Discard Activity</string>
+    <string name="discard_activity_message">Are you sure you want to discard this activity?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

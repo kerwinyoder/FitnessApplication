@@ -97,4 +97,13 @@
         android:onClick="resetBtnClick"
         android:text="Reset" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:id="@+id/button"
+        android:onClick="btnClick"
+        android:layout_above="@+id/activityBtn"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

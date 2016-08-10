@@ -21,19 +21,36 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
 
+import com.example.kerwinyoder.logajog.database.ActivityDataSource;
+import com.example.kerwinyoder.logajog.database.LogAJogContract;
+import com.example.kerwinyoder.logajog.database.LogAJogDbHelper;
+import com.example.kerwinyoder.logajog.database.Seed;
+import com.example.kerwinyoder.logajog.database.model.Activity;
+import com.example.kerwinyoder.logajog.database.model.ActivityDataPoint;
+import com.example.kerwinyoder.logajog.utils.Formatter;
+
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+    private static final int DATA_POINT_RATE = 10; //the number of seconds between saved data points
     private boolean started = false;
     private long startTime; //the start time in milliseconds since the epoch
     private double speedSum = 0; //the sum of all the speeds; used for calculating the average speed
     private int speeds = 0; //the number of speeds used; used for calculating the average speed
     private float distance = 0; //the total distance traveled in meters
     private Location previousLocation; //the location from the previous location update
+    private ArrayList<ActivityDataPoint> dataPoints = new ArrayList<>(500);
+    private int updateCount;
     LocationListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityDataSource activityDataSource = new ActivityDataSource(this);
+        activityDataSource.open();
+        activityDataSource.close();
+//        Seed.seed(this);
     }
 
     /**
@@ -91,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
      * Stops the activity by stopping the clock and removing the location listener updates
      */
     private void stopActivity() {
+        //freeze the counter and stop receiving updates
         Chronometer duration = (Chronometer) findViewById(R.id.duration);
         duration.stop();
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -98,6 +116,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         manager.removeUpdates(listener);
+
+        //Create an Activity with the data
+        int totalDuration = (int) (SystemClock.elapsedRealtime() - duration.getBase()) / 1000; //convert from milliseconds to seconds
+        float avgSpeed = (float) (speedSum / speeds);
+        Activity activity = new Activity(startTime, totalDuration, avgSpeed, distance);
+
+        Intent intent = new Intent(this, CompletedActivity.class);
+        intent.putExtra(".database.model.Activity", activity);
+        intent.putExtra(".database.model.ActivityDataPoint", dataPoints);
+        startActivity(intent);
     }
 
     /**
@@ -108,11 +136,8 @@ public class MainActivity extends AppCompatActivity {
      * @param grantResults the results of the permissions request
      */
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 1024:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity();
-                }
+        if (requestCode == 1024 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startActivity();
         }
     }
 
@@ -133,16 +158,19 @@ public class MainActivity extends AppCompatActivity {
                     distanceView.setText("-.- m");
                 } else {
                     float currentSpeed = location.getSpeed();
-                    speedView.setText(String.format("%.2f m/s", currentSpeed));
+                    speedView.setText(Formatter.getSpeed(currentSpeed));
                     speedSum += currentSpeed;
                     ++speeds;
-                    avgSpeedView.setText(String.format("%.2f m/s", speedSum / speeds));
+                    avgSpeedView.setText(Formatter.getSpeed((float) speedSum / speeds));
                     if (previousLocation == null) {
                         previousLocation = location;
                     }
                     distance += location.distanceTo(previousLocation);
-                    distanceView.setText(String.format("%.2f m", distance));
+                    distanceView.setText(Formatter.getDistance(distance));
                     previousLocation = location;
+                    if(updateCount++ % DATA_POINT_RATE == 0) {
+                        dataPoints.add(new ActivityDataPoint(currentSpeed));
+                    }
                 }
             }
 
@@ -196,25 +224,37 @@ public class MainActivity extends AppCompatActivity {
      * @param view The reset button
      */
     public void resetBtnClick(View view) {
+        //stop the activity
+        Chronometer duration = (Chronometer) findViewById(R.id.duration);
+        duration.stop();
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        manager.removeUpdates(listener);
+
         //reset all variables
-        stopActivity();
         started = false;
         startTime = 0;
         speedSum = 0;
         speeds = 0;
         distance = 0;
         previousLocation = null;
-        Chronometer duration = (Chronometer) findViewById(R.id.duration);
         duration.setBase(SystemClock.elapsedRealtime());
 
         //reset the UI
         TextView speed = (TextView) findViewById(R.id.speed);
         speed.setText(R.string.initial_speed);
-        TextView avgSpeed= (TextView) findViewById(R.id.avgSpeed);
+        TextView avgSpeed = (TextView) findViewById(R.id.avgSpeed);
         avgSpeed.setText(R.string.initial_avg_speed);
-        TextView distance= (TextView) findViewById(R.id.distance);
+        TextView distance = (TextView) findViewById(R.id.distance);
         distance.setText(R.string.initial_distance);
         Button activityBtn = (Button) findViewById(R.id.activityBtn);
         activityBtn.setText("Start Activity");
+    }
+
+    public void btnClick(View view) {
+        Intent intent = new Intent(this, ActivitiesActivity.class);
+        startActivity(intent);
     }
 }
