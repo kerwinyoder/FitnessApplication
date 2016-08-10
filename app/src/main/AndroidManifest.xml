@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ActivitiesActivity" />
-        <activity android:name=".CompletedActivity"></activity>
+        <activity android:name=".CompletedActivity" />
+        <activity android:name=".DetailActivity"></activity>
     </application>
 
 </manifest>
