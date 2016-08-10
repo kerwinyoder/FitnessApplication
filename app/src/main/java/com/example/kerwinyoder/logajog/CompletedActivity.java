@@ -16,8 +16,15 @@ import com.example.kerwinyoder.logajog.database.ActivityDataSource;
 import com.example.kerwinyoder.logajog.database.model.Activity;
 import com.example.kerwinyoder.logajog.database.model.ActivityDataPoint;
 import com.example.kerwinyoder.logajog.utils.Formatter;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CompletedActivity extends AppCompatActivity {
     Activity activity;
@@ -48,6 +55,28 @@ public class CompletedActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.completedDistance);
         textView.setText(Formatter.getDistance(activity.getDistance()));
 
+        //Set up the line chart
+        LineChart chart = (LineChart) findViewById(R.id.chart);
+        List<Entry> entries = getSpeedData();
+        LineDataSet dataSet = new LineDataSet(entries, "Speed");
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+        chart.setDescription(null);
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(true);
+        xAxis.setAxisLineWidth(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        YAxis left = chart.getAxisLeft();
+        left.setDrawGridLines(false);
+        left.setAxisMinValue(0f);
+        left.setDrawAxisLine(true);
+        left.setAxisLineWidth(1f);
+        YAxis right = chart.getAxisRight();
+        right.setDrawGridLines(false);
+        right.setAxisMinValue(0f);
+        right.setAxisLineWidth(1f);
+        chart.invalidate(); // refresh
     }
 
     public void discardButtonClick(View view) {
@@ -65,9 +94,11 @@ public class CompletedActivity extends AppCompatActivity {
         ActivityDataPointDataSource dataPointDataSource = new ActivityDataPointDataSource(this);
         dataPointDataSource.open();
         long activityId = activity.getId();
+        Log.i("LogAJog", String.format("activityId = %d", activityId));
         for(ActivityDataPoint dataPoint : dataPoints) {
             dataPoint.setActivityId(activityId);
             dataPointDataSource.create(dataPoint);
+            Log.i("LogAJog", String.format("saveButtonClick activityId = %d", dataPoint.getActivityId()));
         }
         dataPointDataSource.close();
 
@@ -75,6 +106,16 @@ public class CompletedActivity extends AppCompatActivity {
         Intent intent = new Intent(CompletedActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    private ArrayList<Entry> getSpeedData() {
+        ArrayList<Entry> entries = new ArrayList<>();
+        int secondCount = 0;
+        for (ActivityDataPoint dataPoint : dataPoints) {
+            entries.add(new Entry((float) secondCount, (float) dataPoint.getSpeed()));
+            secondCount += 10;
+        }
+        return entries;
     }
 
     /*

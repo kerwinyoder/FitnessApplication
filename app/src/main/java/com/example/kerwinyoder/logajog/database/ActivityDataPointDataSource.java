@@ -38,13 +38,36 @@ public class ActivityDataPointDataSource {
         values.put(LogAJogContract.ActivityDataPoint.COLUMN_NAME_SPEED, dataPoint.getSpeed());
         long id = database.insert(LogAJogContract.ActivityDataPoint.TABLE_NAME, null, values);
         dataPoint.setId(id);
-        Log.i("LogAJog", "ActivityDataPoint created with id = " + id);
+        Log.i("LogAJog", String.format("ActivityDataPoint created with id = %d, activityId = %d, and speed = %f", id, dataPoint.getActivityId(), dataPoint.getSpeed()));
         return dataPoint;
     }
 
     public List<ActivityDataPoint> findAll() {
         List<ActivityDataPoint> dataPoints = new ArrayList<>();
         Cursor cursor = database.query(LogAJogContract.ActivityDataPoint.TABLE_NAME, LogAJogContract.ActivityDataPoint.ALL_COLUMNS, null, null, null, null, null);
+
+        int count = cursor.getCount();
+        if(count > 0) {
+            while(cursor.moveToNext()) {
+                ActivityDataPoint dataPoint = new ActivityDataPoint();
+                dataPoint.setId(cursor.getLong(cursor.getColumnIndex(LogAJogContract.Activity.COLUMN_ID)));
+                dataPoint.setActivityId(cursor.getInt(cursor.getColumnIndex(LogAJogContract.ActivityDataPoint.COLUMN_NAME_ACTIVITY_ID)));
+                dataPoint.setSpeed(cursor.getFloat(cursor.getColumnIndex(LogAJogContract.ActivityDataPoint.COLUMN_NAME_SPEED)));
+                dataPoints.add(dataPoint);
+            }
+        }
+        Log.i("LogAJog", "Returned " + count + " records");
+        return dataPoints;
+    }
+
+    public List<ActivityDataPoint> findByActivityId(long activityId) {
+        List<ActivityDataPoint> dataPoints = new ArrayList<>();
+        Cursor cursor = database.query(
+                LogAJogContract.ActivityDataPoint.TABLE_NAME,
+                LogAJogContract.ActivityDataPoint.ALL_COLUMNS,
+                LogAJogContract.ActivityDataPoint.COLUMN_NAME_ACTIVITY_ID + " = ?",
+                new String[]{String.valueOf(activityId)},
+                null, null, null);
 
         int count = cursor.getCount();
         if(count > 0) {

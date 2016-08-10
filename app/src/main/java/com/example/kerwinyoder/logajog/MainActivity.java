@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
@@ -121,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         int totalDuration = (int) (SystemClock.elapsedRealtime() - duration.getBase()) / 1000; //convert from milliseconds to seconds
         float avgSpeed = (float) (speedSum / speeds);
         Activity activity = new Activity(startTime, totalDuration, avgSpeed, distance);
+
+        Log.i("LogAJog", String.valueOf(dataPoints.size()));
 
         Intent intent = new Intent(this, CompletedActivity.class);
         intent.putExtra(".database.model.Activity", activity);

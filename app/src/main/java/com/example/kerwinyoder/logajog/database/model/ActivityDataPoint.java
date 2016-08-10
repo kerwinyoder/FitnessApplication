@@ -73,7 +73,7 @@ public class ActivityDataPoint implements Parcelable {
      * Sets the activityId of the ActivityDataPoint
      * @param Id
      */
-    public void setActivityId(long Id) {
+    public void setActivityId(long activityId) {
         this.activityId = activityId;
     }
 

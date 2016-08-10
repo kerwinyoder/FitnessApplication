@@ -41,12 +41,12 @@ public class ActivityDataSource {
         values.put(LogAJogContract.Activity.COLUMN_NAME_DISTANCE, activity.getDistance());
         long id = database.insert(LogAJogContract.Activity.TABLE_NAME, null, values);
         activity.setId(id);
-        Log.i("LogAJog", "Activity created with id = " + id);
         return activity;
     }
 
     /**
      * Gets a list of all of the activities sorted from most recent to least recent
+     *
      * @return
      */
     public List<Activity> findAll() {
@@ -55,8 +55,8 @@ public class ActivityDataSource {
         int count = cursor.getCount();
         Log.i("LogAJog", "Returned " + count + " records");
 
-        if(count > 0) {
-            while(cursor.moveToNext()) {
+        if (count > 0) {
+            while (cursor.moveToNext()) {
                 Activity activity = new Activity();
                 activity.setId(cursor.getLong(cursor.getColumnIndex(LogAJogContract.Activity.COLUMN_ID)));
                 activity.setStartTime(cursor.getLong(cursor.getColumnIndex(LogAJogContract.Activity.COLUMN_NAME_START_TIME)));
