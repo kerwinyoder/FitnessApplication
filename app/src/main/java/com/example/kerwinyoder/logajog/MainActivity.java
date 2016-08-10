@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     distance += location.distanceTo(previousLocation);
                     distanceView.setText(Formatter.getDistance(distance));
                     previousLocation = location;
-                    if(updateCount++ % DATA_POINT_RATE == 0) {
+                    if (updateCount++ % DATA_POINT_RATE == 0) {
                         dataPoints.add(new ActivityDataPoint(currentSpeed));
                     }
                 }
@@ -234,8 +234,9 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        manager.removeUpdates(listener);
-
+        if (listener != null) {
+            manager.removeUpdates(listener);
+        }
         //reset all variables
         started = false;
         startTime = 0;

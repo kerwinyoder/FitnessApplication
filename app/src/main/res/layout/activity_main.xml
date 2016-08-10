@@ -81,29 +81,28 @@
 
     <Button
         android:id="@+id/activityBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="activityBtnClick"
-        android:text="Start Activity"
         android:layout_above="@+id/resetBtn"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="activityBtnClick"
+        android:text="Start Activity" />
 
     <Button
         android:id="@+id/resetBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/button"
         android:onClick="resetBtnClick"
         android:text="Reset" />
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History"
         android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:onClick="btnClick"
-        android:layout_above="@+id/activityBtn"
-        android:layout_centerHorizontal="true" />
+        android:text="History" />
 
 </RelativeLayout>

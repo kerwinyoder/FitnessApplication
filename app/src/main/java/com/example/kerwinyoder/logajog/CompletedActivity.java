@@ -29,6 +29,7 @@ import java.util.List;
 public class CompletedActivity extends AppCompatActivity {
     Activity activity;
     ArrayList<ActivityDataPoint> dataPoints;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,7 @@ public class CompletedActivity extends AppCompatActivity {
         xAxis.setDrawAxisLine(true);
         xAxis.setAxisLineWidth(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinValue(0f);
         YAxis left = chart.getAxisLeft();
         left.setDrawGridLines(false);
         left.setAxisMinValue(0f);
@@ -95,7 +97,7 @@ public class CompletedActivity extends AppCompatActivity {
         dataPointDataSource.open();
         long activityId = activity.getId();
         Log.i("LogAJog", String.format("activityId = %d", activityId));
-        for(ActivityDataPoint dataPoint : dataPoints) {
+        for (ActivityDataPoint dataPoint : dataPoints) {
             dataPoint.setActivityId(activityId);
             dataPointDataSource.create(dataPoint);
             Log.i("LogAJog", String.format("saveButtonClick activityId = %d", dataPoint.getActivityId()));

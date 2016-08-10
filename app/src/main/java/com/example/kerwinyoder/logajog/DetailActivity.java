@@ -61,6 +61,7 @@ public class DetailActivity extends AppCompatActivity {
         xAxis.setDrawAxisLine(true);
         xAxis.setAxisLineWidth(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMinValue(0f);
         YAxis left = chart.getAxisLeft();
         left.setDrawGridLines(false);
         left.setAxisMinValue(0f);
